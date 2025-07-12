@@ -1,11 +1,25 @@
 import React from 'react'
 import './App.css'
 import { Die } from './Die'
+import Confetti from 'react-confetti'
 
 const App = () => {
   
-  const [dice, newDice] = React.useState(generateAllNewDice())
+  const [dice, newDice] = React.useState(() =>generateAllNewDice())
 
+  const count = []
+  dice.map(dice => {
+    if (dice.isheld){
+     count.push(dice.value)
+    }
+  })
+
+  let gameWon = (count.length === 10 && count.every(val => val === count[0]))
+
+  console.log(dice)
+  console.log(count)
+  console.log(gameWon)
+  
   function generateAllNewDice() {
     const value = []
     while (value.length < 10 ) {
@@ -20,7 +34,14 @@ const App = () => {
   }
 
   function handleClick() {
-    newDice(prev => 
+    if (!gameWon) {
+      rollDice()
+    } else {
+      newDice(() => generateAllNewDice())
+    }
+  }
+  function rollDice() {
+        newDice(prev => 
       prev.map(dice => 
         !dice.isheld ? 
           {
@@ -59,6 +80,12 @@ const App = () => {
   return (
     <section className='container'>
       <article className='child-container'>
+        {gameWon && <Confetti
+          width={650}
+          height={650}
+        />}
+        <h1>Tenzies Game</h1>
+        <p>Roll until all dice are the same. Click each die to freeze it as its current value between rolls</p>
         <div className="btn-container">
           {btns}
         </div>
@@ -66,7 +93,7 @@ const App = () => {
           onClick={handleClick}
           className='roll'
         >
-          roll
+          {gameWon ? 'New game' : 'Roll'}
         </button>
       </article>
     </section>
