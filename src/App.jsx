@@ -16,6 +16,15 @@ const App = () => {
 
   let gameWon = (count.length === 10 && count.every(val => val === count[0]))
 
+  const focused =React.useRef(null)
+  
+  React.useEffect(() => {
+    if (gameWon) {
+      focused.current.focus()
+    }
+  }, [gameWon])
+
+
   console.log(dice)
   console.log(count)
   console.log(gameWon)
@@ -90,6 +99,7 @@ const App = () => {
           {btns}
         </div>
         <button 
+        ref={focused}
           onClick={handleClick}
           className='roll'
         >
